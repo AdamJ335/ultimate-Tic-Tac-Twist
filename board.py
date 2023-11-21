@@ -1,4 +1,5 @@
 import pygame
+import logging
 
 from const import ALPHA
 from const import FADE
@@ -71,10 +72,13 @@ class Board:
             if row > 2: row %= DIM
             if col > 2: col %= DIM
 
+            # logging.info('Validating... (xclick, row, yclick, col) -> (%s, %s, %s, %s)', xclick, row, yclick, col)
+
             sqr = self.squares[row][col]
 
             # base case
             if not isinstance(sqr, Board):
+                # logging.info('sqr: %s self.active %s', sqr, self.active)
                 return sqr == 0 and self.active
 
             # recursive step
@@ -89,7 +93,7 @@ class Board:
 
             sqr = self.squares[row][col]
 
-            print('marking -> (', row, col, ')')
+            logging.info('Marking Cell -> (%s, %s)', row, col)
 
             # base case
             if not isinstance(sqr, Board):
@@ -133,9 +137,8 @@ class Board:
                             self.dims.ycor + self.dims.sqsize * (0.5 + row))
 
                     pygame.draw.circle(surface, CIRCLE_COLOUR, center, self.radius, self.linewidth)
-
+                
                 return
-
             # recursive step
             sqr.draw_fig(surface, xclick, yclick)
 
