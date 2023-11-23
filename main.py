@@ -20,6 +20,10 @@ class Main:
         pygame.display.set_caption('ULTIMATE TIC TAC TWIST')
         self.game = Game(ultimate=True, max=False)
 
+        self.nextCellCol = -1
+        self.nextCellRow = -1
+        self.nextCell = [0,0]
+
     def mainloop(self):
 
         screen = self.screen
@@ -37,8 +41,9 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN and game.playing:
                     xclick, yclick = event.pos
 
-                    if game.board.valid_sqr(xclick, yclick):
-                        game.board.mark_sqr(xclick, yclick, game.player)
+                    if game.board.valid_sqr(xclick, yclick, self.nextCellCol, self.nextCellRow):
+                        self.nextCell =game.board.mark_sqr(xclick, yclick, game.player, self.nextCell)
+                        logging.info('nextCell = %s',self.nextCell)
                         game.board.draw_fig(screen, xclick, yclick)
 
                         # ultimate winner ?
@@ -47,6 +52,8 @@ class Main:
                             game.board.manage_win(screen, winner, onmain=True)
                             game.ultimate_winner(screen, winner)
 
+                        self.nextCellRow = self.nextCell[0]
+                        self.nextCellCol = self.nextCell[1]
                         game.next_turn()
                     else:
                         logging.info('Invalid move!')

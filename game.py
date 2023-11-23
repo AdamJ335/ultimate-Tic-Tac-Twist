@@ -1,4 +1,5 @@
 import pygame
+import logging
 
 from board import Board
 from const import WIDTH

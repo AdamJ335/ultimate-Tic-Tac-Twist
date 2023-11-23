@@ -11,7 +11,6 @@ from const import WIDTH
 from boardDims import BoardDim
 
 class Board:
-
         def __init__(self, dims=None, linewidth=15, ultimate=False, max=False):
             self.squares = [ [0, 0, 0] for row in range(DIM)]
             self.dims = dims
@@ -63,8 +62,8 @@ class Board:
             # horizontal lines
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
-
-        def valid_sqr(self, xclick, yclick):
+            
+        def valid_sqr(self, xclick, yclick, nextCellCol, nextCellRow):
 
             row = yclick // self.dims.sqsize
             col = xclick // self.dims.sqsize
@@ -72,19 +71,30 @@ class Board:
             if row > 2: row %= DIM
             if col > 2: col %= DIM
 
-            # logging.info('Validating... (xclick, row, yclick, col) -> (%s, %s, %s, %s)', xclick, row, yclick, col)
+            logging.info('Validating... (xclick, row, yclick, col) -> (%s, %s, %s, %s)', xclick, row, yclick, col)
 
             sqr = self.squares[row][col]
-
             # base case
-            if not isinstance(sqr, Board):
-                # logging.info('sqr: %s self.active %s', sqr, self.active)
+            if not isinstance(sqr, Board):     
+                logging.info('sqr: %s self.active %s', sqr, self.active)
                 return sqr == 0 and self.active
-
+            else:
+                # print('Active board ->', self.active)
+                # if the only valid grid is full, allow Free move
+                # if(False):
+                #     nextCellCol = -1
+                #     nextCellRow = -1
+                if(nextCellCol == -1 and nextCellRow == -1 and self.active):
+                    logging.info('Ignore next move check -> Free move')
+                    nextCellCol = col
+                    nextCellRow = row
+                if (nextCellCol != col or nextCellRow != row):
+                    return False
             # recursive step
-            return sqr.valid_sqr(xclick, yclick)
+            return sqr.valid_sqr(xclick, yclick, nextCellCol, nextCellRow)
 
-        def mark_sqr(self, xclick, yclick, player):
+        def mark_sqr(self, xclick, yclick, player, nextCell):
+            
             row = yclick // self.dims.sqsize
             col = xclick // self.dims.sqsize
 
@@ -97,11 +107,16 @@ class Board:
 
             # base case
             if not isinstance(sqr, Board):
+                logging.info('Inner Cell found -> (%s,%s)', row, col)
                 self.squares[row][col] = player
-                return
+                nextCell = [row, col]
+                print('returning ', nextCell)
+
+                return nextCell
 
             # recursive step
-            sqr.mark_sqr(xclick, yclick, player)
+            return sqr.mark_sqr(xclick, yclick, player, nextCell)
+
 
         def draw_fig(self, surface, xclick, yclick):
             row = yclick // self.dims.sqsize
@@ -137,7 +152,7 @@ class Board:
                             self.dims.ycor + self.dims.sqsize * (0.5 + row))
 
                     pygame.draw.circle(surface, CIRCLE_COLOUR, center, self.radius, self.linewidth)
-                
+
                 return
             # recursive step
             sqr.draw_fig(surface, xclick, yclick)
@@ -154,6 +169,7 @@ class Board:
             
             # draw win
             if not onmain:
+                print("WINNER IS -> ", winner)
                 # cross
                 if winner == 1:
                     # desc line
@@ -183,7 +199,6 @@ class Board:
         def check_draw_win(self, surface,):
 
             isfull = True
-
             for row in range(DIM):
                 for col in range(DIM):
 
