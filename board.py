@@ -196,7 +196,7 @@ class Board:
             # inactive board
             self.active = False
 
-        def check_draw_win(self, surface,):
+        def check_draw_win(self, surface):
 
             isfull = True
             for row in range(DIM):
