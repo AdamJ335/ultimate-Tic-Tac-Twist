@@ -19,10 +19,7 @@ class Main:
         self.screen.fill(BG_COLOUR)
         pygame.display.set_caption('ULTIMATE TIC TAC TWIST')
         self.game = Game(ultimate=True, max=False)
-
-        self.nextCellCol = -1
-        self.nextCellRow = -1
-        self.nextCell = [0,0]
+        self.nextCell = [-1,-1]
 
     def mainloop(self):
 
@@ -41,7 +38,7 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN and game.playing:
                     xclick, yclick = event.pos
 
-                    if game.board.valid_sqr(xclick, yclick, self.nextCellCol, self.nextCellRow):
+                    if game.board.valid_sqr(xclick, yclick, self.nextCell):
                         self.nextCell =game.board.mark_sqr(xclick, yclick, game.player, self.nextCell)
                         logging.info('nextCell = %s',self.nextCell)
                         game.board.draw_fig(screen, xclick, yclick)
@@ -54,6 +51,8 @@ class Main:
 
                         self.nextCellRow = self.nextCell[0]
                         self.nextCellCol = self.nextCell[1]
+                        if game.board.next_board_full(xclick, yclick, self.nextCell):
+                            self.nextCell = [-1,-1] 
                         game.next_turn()
                     else:
                         logging.info('Invalid move!')

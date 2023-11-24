@@ -62,8 +62,23 @@ class Board:
             # horizontal lines
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
+        
+        def next_board_full(self, xclick, yclick, nextCell):
+
+            row = yclick // self.dims.sqsize
+            col = xclick // self.dims.sqsize
+
+            if row > 2: row %= DIM
+            if col > 2: col %= DIM
             
-        def valid_sqr(self, xclick, yclick, nextCellCol, nextCellRow):
+            sqr = self.squares[row][col]
+
+            if not isinstance(sqr, Board) and nextCell[0] == col and nextCell[1] == row :
+                # self.active = True
+                return True
+            return False
+
+        def valid_sqr(self, xclick, yclick, nextCell):
 
             row = yclick // self.dims.sqsize
             col = xclick // self.dims.sqsize
@@ -79,19 +94,13 @@ class Board:
                 logging.info('sqr: %s self.active %s', sqr, self.active)
                 return sqr == 0 and self.active
             else:
-                # print('Active board ->', self.active)
-                # if the only valid grid is full, allow Free move
-                # if(False):
-                #     nextCellCol = -1
-                #     nextCellRow = -1
-                if(nextCellCol == -1 and nextCellRow == -1 and self.active):
+                if nextCell[0] == -1 and nextCell[1] == -1 :
                     logging.info('Ignore next move check -> Free move')
-                    nextCellCol = col
-                    nextCellRow = row
-                if (nextCellCol != col or nextCellRow != row):
+                    nextCell = [col,row]
+                if nextCell[0] != col or nextCell[1] != row :
                     return False
             # recursive step
-            return sqr.valid_sqr(xclick, yclick, nextCellCol, nextCellRow)
+            return sqr.valid_sqr(xclick, yclick, nextCell)
 
         def mark_sqr(self, xclick, yclick, player, nextCell):
             
@@ -109,7 +118,7 @@ class Board:
             if not isinstance(sqr, Board):
                 logging.info('Inner Cell found -> (%s,%s)', row, col)
                 self.squares[row][col] = player
-                nextCell = [row, col]
+                nextCell = [col, row]
                 print('returning ', nextCell)
 
                 return nextCell
@@ -211,6 +220,7 @@ class Board:
                         if winner: # recursive step
                             self.squares[row][col] = winner
                             sqr.manage_win(surface, winner)
+                            self.active = False
 
                     # main
                     # vertical wins
