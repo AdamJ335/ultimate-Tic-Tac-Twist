@@ -73,10 +73,19 @@ class Board:
             
             sqr = self.squares[row][col]
 
-            if not isinstance(sqr, Board) and nextCell[0] == col and nextCell[1] == row :
-                # self.active = True
-                return True
-            return False
+            # Get Board at next cell co-ordinates. and check if active=True
+            nextGrid = self.squares[nextCell[1]][nextCell[0]]
+
+            if not isinstance(sqr, Board):
+                return sqr.next_board_full(xclick, yclick, nextCell)
+            else:
+                if nextGrid == 1 or nextGrid == 2:
+                    return True
+                if nextCell[0] == col and nextCell[1] == row:
+                    return True
+                if nextCell[0] != col or nextCell[1] != row:
+                    return False
+            
 
         def valid_sqr(self, xclick, yclick, nextCell):
 

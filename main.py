@@ -43,16 +43,17 @@ class Main:
                         logging.info('nextCell = %s',self.nextCell)
                         game.board.draw_fig(screen, xclick, yclick)
 
+                        self.nextCellRow = self.nextCell[0]
+                        self.nextCellCol = self.nextCell[1]
+                        if game.board.next_board_full(xclick, yclick, self.nextCell):
+                            self.nextCell = [-1,-1] 
+                        
                         # ultimate winner ?
                         winner = game.board.check_draw_win(screen)
                         if winner:
                             game.board.manage_win(screen, winner, onmain=True)
                             game.ultimate_winner(screen, winner)
 
-                        self.nextCellRow = self.nextCell[0]
-                        self.nextCellCol = self.nextCell[1]
-                        if game.board.next_board_full(xclick, yclick, self.nextCell):
-                            self.nextCell = [-1,-1] 
                         game.next_turn()
                     else:
                         logging.info('Invalid move!')
