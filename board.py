@@ -63,7 +63,10 @@ class Board:
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
         
-        def next_board_full(self, xclick, yclick, nextCell):
+        def next_board_full(self, xclick, yclick, nextCell, ultimate):
+            if ultimate == False :
+                logging.info("Not relevant variable checking, set to True to validate next move")
+                return True
 
             row = yclick // self.dims.sqsize
             col = xclick // self.dims.sqsize
@@ -77,14 +80,13 @@ class Board:
             nextGrid = self.squares[nextCell[1]][nextCell[0]]
 
             if not isinstance(sqr, Board):
-                return sqr.next_board_full(xclick, yclick, nextCell)
+                return sqr.next_board_full(xclick, yclick, nextCell, ultimate)
             else:
                 if nextGrid == 1 or nextGrid == 2:
                     return True
                 if nextCell[0] == col and nextCell[1] == row:
                     return True
-                if nextCell[0] != col or nextCell[1] != row:
-                    return False
+            return False
             
 
         def valid_sqr(self, xclick, yclick, nextCell):
