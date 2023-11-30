@@ -51,7 +51,10 @@ class Game:
         self.playing = False
 
     def check_next_board_full(self, xclick, yclick, nextCell):
-        return self.board.next_board_full(xclick, yclick, nextCell, self.ultimate)
+        return self.board.next_board_full(xclick, yclick, nextCell, self.ultimate, self.max)
+    
+    def check_valid_move(self, xclick, yclick, nextCell):
+        return self.board.valid_sqr(xclick, yclick, nextCell, self.max)
     
     def restart(self):
         self.__init__(self.ultimate, self.max)

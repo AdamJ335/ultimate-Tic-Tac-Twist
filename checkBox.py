@@ -1,26 +1,21 @@
 import pygame
+pygame.font.init()
 
 from const import FONT_SIZE
 from const import FONT_COLOUR
 from const import OUTLINE_COLOUR
-from const import CHECKBOX_FILL_COLOUR_GAME
-from const import CHECKBOX_LINE_COLOUR
-from const import TEXT_OFFSET
-from const import FONT_TYPE
+from const import CHECKBOX_FILL_COLOUR
 
-pygame.font.init()
-
-class Checkbox:
-    def __init__(self, surface, x, y, idnum, color=CHECKBOX_LINE_COLOUR,
-        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=False, outline_color=OUTLINE_COLOUR,
-        font_size=FONT_SIZE, font_color=FONT_COLOUR,
-    text_offset=TEXT_OFFSET,font=FONT_TYPE):
+class CheckBox:
+    def __init__(self, surface, x, y, idnum, color=(230, 230, 230),
+        caption="", outline_color=OUTLINE_COLOUR, check_color=CHECKBOX_FILL_COLOUR,
+        font_size=FONT_SIZE, font_color=FONT_COLOUR, 
+    text_offset=(28, 1), font='Ariel Black'):
         self.surface = surface
         self.x = x
         self.y = y
         self.color = color
         self.caption = caption
-        self.cross_filled = cross_filled
         self.oc = outline_color
         self.cc = check_color
         self.fs = font_size
@@ -32,7 +27,7 @@ class Checkbox:
         self.idnum = idnum
 
         # checkbox object
-        self.checkbox_obj = pygame.Rect(self.x, self.y, 20, 20)
+        self.checkbox_obj = pygame.Rect(self.x, self.y, 12, 12)
         self.checkbox_outline = self.checkbox_obj.copy()
 
         # variables to test the different states of the checkbox
@@ -50,11 +45,7 @@ class Checkbox:
         if self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
             pygame.draw.rect(self.surface, self.oc, self.checkbox_outline, 1)
-            if self.cross_filled:
-                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+1), (self.x+16, self.y+18), 4)
-                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+18), (self.x+16, self.y+1), 4)
-            else:    
-                pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8, 3)
+            pygame.draw.circle(self.surface, self.cc, (self.x + 6, self.y + 6), 4)
 
         elif not self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
@@ -74,3 +65,6 @@ class Checkbox:
         if event_object.type == pygame.MOUSEBUTTONDOWN:
             self.click = True
             self._update()
+            
+        
+        
