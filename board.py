@@ -189,8 +189,7 @@ class Board:
                 transparent.fill(CROSS_COLOUR)
             if winner == 2:
                 transparent.fill(CIRCLE_COLOUR)
-            else:
-                transparent.fill( FADE )
+            
             if onmain: 
                 surface.blit(transparent, (self.dims.xcor, self.dims.ycor))
                 surface.blit(transparent, (self.dims.xcor, self.dims.ycor))

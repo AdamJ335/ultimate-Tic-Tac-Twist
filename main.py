@@ -6,6 +6,9 @@ import button
 from const import WIDTH
 from const import HEIGHT
 from const import BG_COLOUR
+from const import CHECKBOX_FILL_COLOUR_GAME
+from const import CHECKBOX_FILL_COLOUR_PLAYER
+
 from game import Game
 from checkBox import CheckBox
 
@@ -28,13 +31,14 @@ class Main:
         exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
 
         # create button instances
-        start_button = button.Button(253, 475, start_img, 0.8)
-        exit_button = button.Button(268, 600, exit_img, 0.8)
+        start_button = button.Button(260, 475, start_img, 0.8)
+        exit_button = button.Button(275, 600, exit_img, 0.8)
 
         gameModes = []
-        regularCheck = CheckBox(self.screen, 200, 200, 0, caption='Regular')
-        ultimateCheck = CheckBox(self.screen, 200, 250, 1, caption='Ultimate')
-        maxCheck = CheckBox(self.screen, 200, 300, 2, caption='Max!!!')
+        regularCheck = CheckBox(self.screen, 200, 200, 0, caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        ultimateCheck = CheckBox(self.screen, 200, 250, 1, caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        maxCheck = CheckBox(self.screen, 200, 300, 2, caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        regularCheck.checked = True
         gameModes.append(regularCheck)
         gameModes.append(ultimateCheck)
         gameModes.append(maxCheck)
@@ -43,8 +47,9 @@ class Main:
         maxMode = False
 
         playerModes = []
-        singlePlayerCheck = CheckBox(self.screen, 400, 200, 0, caption='1P')
-        multiPlayerCheck = CheckBox(self.screen, 400, 250, 0, caption='2P')
+        singlePlayerCheck = CheckBox(self.screen, 400, 200, 0, caption='1P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
+        multiPlayerCheck = CheckBox(self.screen, 400, 250, 0, caption='2P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
+        multiPlayerCheck.checked = True
         playerModes.append(singlePlayerCheck)
         playerModes.append(multiPlayerCheck)
 
