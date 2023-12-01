@@ -1,5 +1,6 @@
 import pygame
 import logging
+import pyautogui
 
 from board import Board
 from const import WIDTH
@@ -10,9 +11,10 @@ from const import BG_COLOUR
 
 class Game:
 
-    def __init__(self, ultimate=False, max=False):
+    def __init__(self, ultimate=False, max=False, singlePlayer=False):
         self.ultimate = ultimate
         self.max = max
+        self.singlePlayer = singlePlayer
         self.board = Board(ultimate=ultimate, max=max)
         self.player = 1
         self.playing = True
@@ -25,7 +27,6 @@ class Game:
         self.board.render(screen)
         logging.info('Starting in game loop')
         while True:
-
             for event in pygame.event.get():
 
                 # click
@@ -51,6 +52,7 @@ class Game:
                         self.next_turn()
                     else:
                         logging.info('Invalid move!')
+                        pyautogui.alert("Your move does not work as it is Invalid!")
 
                 # keypress
                 if event.type == pygame.KEYDOWN:
