@@ -5,8 +5,6 @@ import pyautogui
 from board import Board
 from const import WIDTH
 from const import HEIGHT
-from const import CROSS_COLOUR
-from const import CIRCLE_COLOUR
 from const import BG_COLOUR
 
 class Game:
