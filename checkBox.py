@@ -4,12 +4,12 @@ pygame.font.init()
 from const import FONT_SIZE
 from const import FONT_COLOUR
 from const import OUTLINE_COLOUR
-from const import CHECKBOX_FILL_COLOUR
+from const import CHECKBOX_FILL_COLOUR_GAME
 from const import CHECKBOX_LINE_COLOUR
 
 class CheckBox:
     def __init__(self, surface, x, y, idnum, color=CHECKBOX_LINE_COLOUR,
-        caption="", outline_color=OUTLINE_COLOUR, check_color=CHECKBOX_FILL_COLOUR,
+        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME,  outline_color=OUTLINE_COLOUR, 
         font_size=FONT_SIZE, font_color=FONT_COLOUR, 
     text_offset=(28, 4), font='Ariel Black'):
         self.surface = surface

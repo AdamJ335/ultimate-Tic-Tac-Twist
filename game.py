@@ -60,7 +60,7 @@ class Game:
                         logging.info('Restarting the game!')
                         self.restart()
                         screen.fill(BG_COLOUR)
-                        self.render_board(screen)
+                        self.board.render(screen)
                         self.nextCell = [-1,-1]
                     if event.key == pygame.K_ESCAPE:
                         logging.info('Returning to Main menu')
@@ -80,7 +80,7 @@ class Game:
         print('ULTIMATE WINNER! ->', winner)
 
         if winner == 1:
-            color = CROSS_COLOUR
+            # color = CROSS_COLOUR
             # desc
             iDesc = (WIDTH // 2 - 110, HEIGHT // 2 - 110)
             fDesc = (WIDTH // 2 + 110, HEIGHT // 2 + 110)
@@ -88,17 +88,17 @@ class Game:
             iAsc = (WIDTH // 2 - 110, HEIGHT // 2 + 110)
             fAsc = (WIDTH // 2 + 110, HEIGHT // 2 - 110)
             # draw
-            pygame.draw.line(surface, color, iDesc, fDesc, 22)
-            pygame.draw.line(surface, color, iAsc, fAsc, 22)
+            pygame.draw.line(surface, BG_COLOUR, iDesc, fDesc, 22)
+            pygame.draw.line(surface, BG_COLOUR, iAsc, fAsc, 22)
 
         else:
-            color = CIRCLE_COLOUR
+            # color = CIRCLE_COLOUR
             # center
             center = (WIDTH // 2, HEIGHT // 2   )
-            pygame.draw.circle(surface, color, center, WIDTH // 4, 22)
+            pygame.draw.circle(surface, BG_COLOUR, center, WIDTH // 4, 22)
         
         font = pygame.font.SysFont('monospace', 64)
-        lbl = font.render('ULTIMATE WINNER!', 1, color)
+        lbl = font.render('WINNER!', 1, BG_COLOUR)
         surface.blit(lbl, (WIDTH // 2 - lbl.get_rect().width // 2, HEIGHT // 2 + 220))
 
         self.playing = False
