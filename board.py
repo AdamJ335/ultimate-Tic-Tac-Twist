@@ -185,7 +185,12 @@ class Board:
             # transparent screen
             transparent = pygame.Surface( (self.dims.size, self.dims.size) )
             transparent.set_alpha( ALPHA )
-            transparent.fill( FADE )
+            if winner == 1:
+                transparent.fill(CROSS_COLOUR)
+            if winner == 2:
+                transparent.fill(CIRCLE_COLOUR)
+            else:
+                transparent.fill( FADE )
             if onmain: 
                 surface.blit(transparent, (self.dims.xcor, self.dims.ycor))
                 surface.blit(transparent, (self.dims.xcor, self.dims.ycor))
