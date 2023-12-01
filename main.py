@@ -1,12 +1,16 @@
-import pygame
 import sys
 import logging 
+import pygame
+import button
 
 from const import WIDTH
 from const import HEIGHT
 from const import BG_COLOUR
-from game import Game
+from const import CHECKBOX_FILL_COLOUR_GAME
+from const import CHECKBOX_FILL_COLOUR_PLAYER
 
+from game import Game
+from checkBox import Checkbox
 
 class Main:
 
@@ -17,64 +21,110 @@ class Main:
         
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.screen.fill(BG_COLOUR)
-        pygame.display.set_caption('ULTIMATE TIC TAC TWIST')
-        self.game = Game(ultimate=True, max=False)
-        self.nextCell = [-1,-1]
 
-    def mainloop(self):
 
-        screen = self.screen
-        game = self.game
 
-        self.screen.fill(BG_COLOUR)
-        game.render_board(screen)
+    def menu(self):        
+        pygame.display.set_caption('Menu')
+        # load button images
+        start_img = pygame.image.load('assets/start_btn.png').convert_alpha()
+        exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
+
+        # create button instances
+        start_button = button.Button(260, 475, start_img, 0.8)
+        exit_button = button.Button(275, 600, exit_img, 0.8)
+
+        
+        regularCheck = Checkbox(self.screen, 200, 200, 0,
+                                caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        ultimateCheck = Checkbox(self.screen, 200, 250, 1,
+                                caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        maxCheck = Checkbox(self.screen, 200, 300, 2,
+                            caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME)
+        regularCheck.checked = True
+        game_modes = [regularCheck, ultimateCheck, maxCheck]
+
+        ultimate_mode = False
+        max_mode = False
+
+        
+        singleplayer_check = Checkbox(self.screen, 400, 200, 0, 
+                                    caption='1P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
+        multiplayer_check = Checkbox(self.screen, 400, 250, 0,
+                                    caption='2P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
+        multiplayer_check.checked = True
+        player_modes = [singleplayer_check, multiplayer_check]
+
+        singlePlayer = False
 
         while True:
+            screen = self.screen
 
+            if start_button.draw(screen):
+                for player in player_modes:
+                    if player.checked:
+                        if player.caption == '1P':
+                            singlePlayer = True
+                            print(singlePlayer)
+                        if player.caption == '2P':
+                            singlePlayer = False
+                            print(singlePlayer)
+                for mode in game_modes:
+                    if mode.checked:
+                        if mode.caption == 'Regular':
+                            ultimate_mode = False
+                            max_mode = False
+                        if mode.caption == 'Ultimate':
+                            ultimate_mode = True
+                            max_mode = False
+                        if mode.caption == 'Max!!!':
+                            ultimate_mode = True
+                            max_mode = True
+                
+                logging.info('Starting game with UltimateMode -> %s and MaxMode -> %s', ultimate_mode, max_mode)
+                logging.info('Single Player mode? %s', singlePlayer)
+                self.play_game(ultimate_mode, max_mode, singlePlayer)
+            
+            pygame.display.update()
             for event in pygame.event.get():
-
-                # click
-                # toDo increase validation rule
-                if event.type == pygame.MOUSEBUTTONDOWN and game.playing:
-                    xclick, yclick = event.pos
-
-                    if game.board.valid_sqr(xclick, yclick, self.nextCell):
-                        self.nextCell =game.board.mark_sqr(xclick, yclick, game.player, self.nextCell)
-                        logging.info('nextCell = %s',self.nextCell)
-                        game.board.draw_fig(screen, xclick, yclick)
-
-                        self.nextCellRow = self.nextCell[0]
-                        self.nextCellCol = self.nextCell[1]
-                        if game.board.next_board_full(xclick, yclick, self.nextCell):
-                            self.nextCell = [-1,-1] 
-                        
-                        # ultimate winner ?
-                        winner = game.board.check_draw_win(screen)
-                        if winner:
-                            game.board.manage_win(screen, winner, onmain=True)
-                            game.ultimate_winner(screen, winner)
-
-                        game.next_turn()
-                    else:
-                        logging.info('Invalid move!')
-
-                # keypress
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
-                        logging.info('Restarting the game!')
-                        game.restart()
-                        self.screen.fill(BG_COLOUR)
-                        game.render_board(screen)
-
-                # quit
-                if event.type == pygame.QUIT:
+                 # quit
+                if event.type == pygame.QUIT or exit_button.draw(screen):
                     logging.info('Quitting')
                     pygame.quit()
                     sys.exit()
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:    
+                    for mode in game_modes:
+                        mode.update_checkbox(event)
+                        if mode.checked:
+                            for b in game_modes:
+                                if b != mode:
+                                    b.checked = False
+                    for player in player_modes:
+                        player.update_checkbox(event)
+                        if player.checked:
+                            for b in player_modes:
+                                if b != player:
+                                    b.checked = False
+            for mode in game_modes:
+                mode.render_checkbox()
+            for player in player_modes:
+                player.render_checkbox()
+                
+            pygame.display.flip()
+               
 
-            pygame.display.update()
+    def play_game(self, ultimate, maxMode, singlePlayer):
+
+        logging.info('Loading game...')
+
+        screen = self.screen
+        screen.fill(BG_COLOUR)
+        game = Game(ultimate=ultimate, max=maxMode, singlePlayer=singlePlayer)
+        game.play_game(screen)
+        self.menu()
 
 
 if __name__ == '__main__':
     main = Main()
-    main.mainloop()
+    main.menu()
