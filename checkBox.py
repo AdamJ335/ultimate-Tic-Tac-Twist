@@ -1,5 +1,4 @@
 import pygame
-pygame.font.init()
 
 from const import FONT_SIZE
 from const import FONT_COLOUR
@@ -7,10 +6,12 @@ from const import OUTLINE_COLOUR
 from const import CHECKBOX_FILL_COLOUR_GAME
 from const import CHECKBOX_LINE_COLOUR
 
-class CheckBox:
+pygame.font.init()
+
+class Checkbox:
     def __init__(self, surface, x, y, idnum, color=CHECKBOX_LINE_COLOUR,
-        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME,  outline_color=OUTLINE_COLOUR, 
-        font_size=FONT_SIZE, font_color=FONT_COLOUR, 
+        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME,  outline_color=OUTLINE_COLOUR,
+        font_size=FONT_SIZE, font_color=FONT_COLOUR,
     text_offset=(28, 4), font='Ariel Black'):
         self.surface = surface
         self.x = x
@@ -66,6 +67,3 @@ class CheckBox:
         if event_object.type == pygame.MOUSEBUTTONDOWN:
             self.click = True
             self._update()
-            
-        
-        

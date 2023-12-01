@@ -1,7 +1,6 @@
 from const import DIM
 
-class BoardDim:
-
+class Board_Dim:
 
     def __init__ (self, size, xcor, ycor):
         self.size = size
