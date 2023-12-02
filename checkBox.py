@@ -5,19 +5,22 @@ from const import FONT_COLOUR
 from const import OUTLINE_COLOUR
 from const import CHECKBOX_FILL_COLOUR_GAME
 from const import CHECKBOX_LINE_COLOUR
+from const import TEXT_OFFSET
+from const import FONT_TYPE
 
 pygame.font.init()
 
 class Checkbox:
     def __init__(self, surface, x, y, idnum, color=CHECKBOX_LINE_COLOUR,
-        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME,  outline_color=OUTLINE_COLOUR,
+        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=False, outline_color=OUTLINE_COLOUR,
         font_size=FONT_SIZE, font_color=FONT_COLOUR,
-    text_offset=(28, 4), font='Ariel Black'):
+    text_offset=TEXT_OFFSET,font=FONT_TYPE):
         self.surface = surface
         self.x = x
         self.y = y
         self.color = color
         self.caption = caption
+        self.cross_filled = cross_filled
         self.oc = outline_color
         self.cc = check_color
         self.fs = font_size
@@ -47,7 +50,11 @@ class Checkbox:
         if self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
             pygame.draw.rect(self.surface, self.oc, self.checkbox_outline, 1)
-            pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8, 3)
+            if self.cross_filled:
+                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+1), (self.x+16, self.y+18), 4)
+                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+18), (self.x+16, self.y+1), 4)
+            else:    
+                pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8, 3)
 
         elif not self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
