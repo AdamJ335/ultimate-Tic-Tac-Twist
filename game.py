@@ -42,6 +42,7 @@ class Game:
                         self.nextCellRow = self.next_cell[0]
                         self.nextCellCol = self.next_cell[1]
                         if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max_mode):
+                            logging.info("Next board is full, setting free move")
                             self.next_cell = [-1,-1] 
                         # ultimate winner ?
                         winner = self.board.check_draw_win(screen)

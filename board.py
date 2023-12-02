@@ -113,8 +113,6 @@ class Board:
         else:
             if next_grid == 1 or next_grid == 2:
                 return True
-            if next_cell[0] == col and next_cell[1] == row:
-                return True
         return False
         
 
