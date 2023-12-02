@@ -36,11 +36,11 @@ class Main:
 
         
         regularCheck = Checkbox(self.screen, 200, 200, 0,
-                                caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME)
+                                caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
         ultimateCheck = Checkbox(self.screen, 200, 250, 1,
-                                caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME)
+                                caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
         maxCheck = Checkbox(self.screen, 200, 300, 2,
-                            caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME)
+                            caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
         regularCheck.checked = True
         game_modes = [regularCheck, ultimateCheck, maxCheck]
 
