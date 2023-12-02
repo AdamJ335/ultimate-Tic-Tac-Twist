@@ -114,13 +114,13 @@ class Main:
             pygame.display.flip()
                
 
-    def play_game(self, ultimate, maxMode, singlePlayer):
+    def play_game(self, ultimate, max_mode, single_player):
 
         logging.info('Loading game...')
 
         screen = self.screen
         screen.fill(BG_COLOUR)
-        game = Game(ultimate=ultimate, max=maxMode, singlePlayer=singlePlayer)
+        game = Game(ultimate=ultimate, max_mode=max_mode, single_player=single_player)
         game.play_game(screen)
         self.menu()
 
