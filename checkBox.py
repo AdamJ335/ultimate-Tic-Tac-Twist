@@ -47,7 +47,7 @@ class Checkbox:
         if self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
             pygame.draw.rect(self.surface, self.oc, self.checkbox_outline, 1)
-            pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8)
+            pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8, 3)
 
         elif not self.checked:
             pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
