@@ -96,23 +96,12 @@ class Board:
         if not ultimate :
             logging.info("Not relevant variable checking, set to True to validate next move")
             return True
-
-        row = yclick // self.dims.sqsize
-        col = xclick // self.dims.sqsize
-
-        if row > 2: row %= DIM
-        if col > 2: col %= DIM
         
-        sqr = self.squares[row][col]
-
         # Get Board at next cell co-ordinates. and check if active=True
         next_grid = self.squares[next_cell[1]][next_cell[0]]
 
-        if not isinstance(sqr, Board) and not max_mode:
-            return sqr.next_board_full(xclick, yclick, next_cell, ultimate, max_mode)
-        else:
-            if next_grid == 1 or next_grid == 2:
-                return True
+        if next_grid == 1 or next_grid == 2:
+            return True
         return False
         
 

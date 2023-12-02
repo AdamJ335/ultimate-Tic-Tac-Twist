@@ -1,6 +1,7 @@
 import pygame
 import logging
 import pyautogui
+import random
 
 from board import Board
 from const import WIDTH
@@ -34,22 +35,21 @@ class Game:
                     xclick, yclick = event.pos
 
                     if self.board.valid_sqr(xclick, yclick, self.next_cell, self.max_mode):
-                        # next_board.fill(BG_COLOUR)
-                        self.next_cell = self.board.mark_sqr(xclick, yclick, self.player, self.next_cell)
-                        logging.info('nextCell = %s',self.next_cell)
-                        self.board.draw_fig(screen, xclick, yclick)
 
-                        self.nextCellRow = self.next_cell[0]
-                        self.nextCellCol = self.next_cell[1]
-                        if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max_mode):
-                            logging.info("Next board is full, setting free move")
-                            self.next_cell = [-1,-1] 
+                        self.handle_move(screen, xclick, yclick)
+
                         # ultimate winner ?
                         winner = self.board.check_draw_win(screen)
                         if winner:
                             self.board.manage_win(screen, winner, onmain=True)
                             self.ultimate_winner(screen, winner)
-
+                        # if self.single_player:
+                        #     self.handle_computer_turn()
+                        # else:
+                        
+                        if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max_mode):
+                            logging.info("Next board is full, setting free move")
+                            self.next_cell = [-1,-1] 
                         self.next_turn()
                         self.board.highlight_valid_move(screen, self.next_cell, self.player)
                     else:
@@ -75,8 +75,24 @@ class Game:
                     return
             pygame.display.update()
 
+    def handle_move(self, screen, xclick, yclick):
+        self.next_cell = self.board.mark_sqr(xclick, yclick, self.player, self.next_cell)
+        logging.info('nextCell = %s',self.next_cell)
+        self.board.draw_fig(screen, xclick, yclick)
+
+        self.nextCellRow = self.next_cell[0]
+        self.nextCellCol = self.next_cell[1]
+
     def next_turn(self):
         self.player = 2 if self.player == 1 else 1
+
+    # def handle_computer_turn(self):
+    #     logging.info("Handling CPU Turn")
+    #     self.next_turn()
+    #     valid_moves = self.board.fetch_valid_moves()
+
+    #     move_chosen = valid_moves[random.randInt(0, len(valid_moves)-1)]
+
 
     def ultimate_winner(self, surface, winner):
         print('ULTIMATE WINNER! ->', winner)
