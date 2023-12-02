@@ -9,11 +9,11 @@ from const import BG_COLOUR
 
 class Game:
 
-    def __init__(self, ultimate=False, max=False, singlePlayer=False):
+    def __init__(self, ultimate=False, max_mode=False, single_player=False):
         self.ultimate = ultimate
-        self.max = max
-        self.singlePlayer = singlePlayer
-        self.board = Board(ultimate=ultimate, max=max)
+        self.max_mode = max_mode
+        self.single_player = single_player
+        self.board = Board(ultimate=ultimate, max_mode=max_mode)
         self.player = 1
         self.playing = True
         self.next_cell = [-1,-1]
@@ -33,7 +33,7 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN and self.playing:
                     xclick, yclick = event.pos
 
-                    if self.board.valid_sqr(xclick, yclick, self.next_cell, self.max):
+                    if self.board.valid_sqr(xclick, yclick, self.next_cell, self.max_mode):
                         # next_board.fill(BG_COLOUR)
                         self.next_cell = self.board.mark_sqr(xclick, yclick, self.player, self.next_cell)
                         logging.info('nextCell = %s',self.next_cell)
@@ -41,7 +41,7 @@ class Game:
 
                         self.nextCellRow = self.next_cell[0]
                         self.nextCellCol = self.next_cell[1]
-                        if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max):
+                        if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max_mode):
                             self.next_cell = [-1,-1] 
                         # ultimate winner ?
                         winner = self.board.check_draw_win(screen)
@@ -105,4 +105,4 @@ class Game:
         self.playing = False
     
     def restart(self):
-        self.__init__(self.ultimate, self.max)
+        self.__init__(self.ultimate, self.max_mode)

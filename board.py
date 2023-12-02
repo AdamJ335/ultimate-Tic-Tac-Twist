@@ -1,5 +1,5 @@
-import pygame
 import logging
+import pygame
 
 from const import ALPHA
 from const import BG_COLOUR
@@ -13,19 +13,20 @@ from const import HEIGHT
 from boardDims import Board_Dim
 
 class Board:
-    def __init__(self, dims=None, linewidth=15, ultimate=False, max=False):
+    """Board object for each tic-tac-toe game"""
+    def __init__(self, dims=None, linewidth=15, ultimate=False, max_mode=False):
         self.squares = [ [0, 0, 0] for row in range(DIM)]
         self.dims = dims
 
-        if not dims: 
+        if not dims:
             self.dims = Board_Dim(WIDTH, 0, 0)
 
         self.linewidth = linewidth
         self.offset = self.dims.sqsize * 0.2
         self.radius = (self.dims.sqsize // 2) * 0.7
-        self.max = max
+        self.max_mode = max_mode
 
-        if ultimate: 
+        if ultimate:
             self.create_ultimate()
 
         self.active = True
@@ -46,9 +47,9 @@ class Board:
                 xcor, ycor = self.dims.xcor + (col * self.dims.sqsize), self.dims.ycor + (row * self.dims.sqsize)
                 dims = Board_Dim(size=size, xcor=xcor, ycor=ycor)
                 linewidth = self.linewidth - 7
-                ultimate = self.max
+                ultimate = self.max_mode
 
-                self.squares[row][col] = Board(dims=dims, linewidth=linewidth, ultimate=ultimate, max=False)
+                self.squares[row][col] = Board(dims=dims, linewidth=linewidth, ultimate=ultimate, max_mode=False)
     
     def render(self, surface):
         for row in range(DIM):
@@ -58,12 +59,20 @@ class Board:
                 if isinstance(sqr, Board): sqr.render(surface)
         
         # vertical lines
-        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor + self.dims.sqsize, self.dims.ycor),                  (self.dims.xcor + self.dims.sqsize, self.dims.ycor + self.dims.size), self.linewidth)
-        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor + self.dims.size - self.dims.sqsize, self.dims.ycor), (self.dims.xcor + self.dims.size - self.dims.sqsize, self.dims.ycor + self.dims.size), self.linewidth)
+        pygame.draw.line(surface, LINE_COLOUR, 
+                        (self.dims.xcor + self.dims.sqsize, self.dims.ycor),
+                        (self.dims.xcor + self.dims.sqsize, self.dims.ycor + self.dims.size),
+                        self.linewidth)
+        pygame.draw.line(surface, LINE_COLOUR, 
+                        (self.dims.xcor + self.dims.size - self.dims.sqsize, self.dims.ycor),
+                        (self.dims.xcor + self.dims.size - self.dims.sqsize, self.dims.ycor + self.dims.size),
+                        self.linewidth)
         
         # horizontal lines
-        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
-        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
+        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  
+                         (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
+        pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), 
+                         (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
     
     def highlight_valid_move (self, surface, next_cell, player):
         # surface.fill(BG_COLOUR)
@@ -83,7 +92,7 @@ class Board:
         else:
             pygame.draw.rect(surface, turn_colour, valid_move_sqr, 4)
         return
-    def next_board_full(self, xclick, yclick, nextCell, ultimate, maxMode):
+    def next_board_full(self, xclick, yclick, next_cell, ultimate, max_mode):
         if not ultimate :
             logging.info("Not relevant variable checking, set to True to validate next move")
             return True
@@ -97,19 +106,19 @@ class Board:
         sqr = self.squares[row][col]
 
         # Get Board at next cell co-ordinates. and check if active=True
-        nextGrid = self.squares[nextCell[1]][nextCell[0]]
+        next_grid = self.squares[next_cell[1]][next_cell[0]]
 
-        if not isinstance(sqr, Board) and not maxMode:
-            return sqr.next_board_full(xclick, yclick, nextCell, ultimate, maxMode)
+        if not isinstance(sqr, Board) and not max_mode:
+            return sqr.next_board_full(xclick, yclick, next_cell, ultimate, max_mode)
         else:
-            if nextGrid == 1 or nextGrid == 2:
+            if next_grid == 1 or next_grid == 2:
                 return True
-            if nextCell[0] == col and nextCell[1] == row:
+            if next_cell[0] == col and next_cell[1] == row:
                 return True
         return False
         
 
-    def valid_sqr(self, xclick, yclick, nextCell, maxMode):
+    def valid_sqr(self, xclick, yclick, next_cell, max_mode):
 
 
         row = yclick // self.dims.sqsize
@@ -122,22 +131,22 @@ class Board:
 
         sqr = self.squares[row][col]
         # base case
-        if not isinstance(sqr, Board) and not maxMode:
+        if not isinstance(sqr, Board) and not max_mode:
             logging.info('sqr: %s self.active %s', sqr, self.active)
             return sqr == 0 and self.active
         else:
-            if nextCell[0] == -1 and nextCell[1] == -1 :
+            if next_cell[0] == -1 and next_cell[1] == -1 :
                 logging.info('Ignore next move check -> Free move')
-                nextCell = [col,row]
+                next_cell = [col,row]
                 return True
-            if nextCell[0] != col or nextCell[1] != row :
+            if next_cell[0] != col or next_cell[1] != row :
                 return False
-            if nextCell[0] == col and nextCell[1] == row and maxMode:
+            if next_cell[0] == col and next_cell[1] == row and max_mode:
                 return True
         # recursive step
-        return sqr.valid_sqr(xclick, yclick, nextCell, maxMode)
+        return sqr.valid_sqr(xclick, yclick, next_cell, max_mode)
 
-    def mark_sqr(self, xclick, yclick, player, nextCell):
+    def mark_sqr(self, xclick, yclick, player, next_cell):
         
         row = yclick // self.dims.sqsize
         col = xclick // self.dims.sqsize
@@ -153,13 +162,13 @@ class Board:
         if not isinstance(sqr, Board):
             logging.info('Inner Cell found -> (%s,%s)', row, col)
             self.squares[row][col] = player
-            nextCell = [col, row]
-            print('returning ', nextCell)
+            next_cell = [col, row]
+            print('returning ', next_cell)
 
-            return nextCell
+            return next_cell
 
         # recursive step
-        return sqr.mark_sqr(xclick, yclick, player, nextCell)
+        return sqr.mark_sqr(xclick, yclick, player, next_cell)
 
 
     def draw_fig(self, surface, xclick, yclick):
@@ -245,8 +254,6 @@ class Board:
         self.active = False
 
     def check_draw_win(self, surface):
-
-        isfull = True
         for row in range(DIM):
             for col in range(DIM):
 
