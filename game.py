@@ -16,7 +16,7 @@ class Game:
         self.board = Board(ultimate=ultimate, max=max)
         self.player = 1
         self.playing = True
-        self.nextCell = [-1,-1]
+        self.next_cell = [-1,-1]
         pygame.font.init()
 
     def play_game(self, screen):
@@ -24,23 +24,25 @@ class Game:
         
         self.board.render(screen)
         logging.info('Starting in game loop')
+        self.board.highlight_valid_move(screen, self.next_cell, self.player)
         while True:
+            
             for event in pygame.event.get():
 
                 # click
                 if event.type == pygame.MOUSEBUTTONDOWN and self.playing:
                     xclick, yclick = event.pos
 
-                    if self.board.valid_sqr(xclick, yclick, self.nextCell, self.max):
-                        self.nextCell = self.board.mark_sqr(xclick, yclick, self.player, self.nextCell)
-                        logging.info('nextCell = %s',self.nextCell)
+                    if self.board.valid_sqr(xclick, yclick, self.next_cell, self.max):
+                        # next_board.fill(BG_COLOUR)
+                        self.next_cell = self.board.mark_sqr(xclick, yclick, self.player, self.next_cell)
+                        logging.info('nextCell = %s',self.next_cell)
                         self.board.draw_fig(screen, xclick, yclick)
 
-                        self.nextCellRow = self.nextCell[0]
-                        self.nextCellCol = self.nextCell[1]
-                        if self.board.next_board_full(xclick, yclick, self.nextCell, self.ultimate, self.max):
-                            self.nextCell = [-1,-1] 
-                        
+                        self.nextCellRow = self.next_cell[0]
+                        self.nextCellCol = self.next_cell[1]
+                        if self.board.next_board_full(xclick, yclick, self.next_cell, self.ultimate, self.max):
+                            self.next_cell = [-1,-1] 
                         # ultimate winner ?
                         winner = self.board.check_draw_win(screen)
                         if winner:
@@ -48,6 +50,7 @@ class Game:
                             self.ultimate_winner(screen, winner)
 
                         self.next_turn()
+                        self.board.highlight_valid_move(screen, self.next_cell, self.player)
                     else:
                         logging.info('Invalid move!')
                         pyautogui.alert("Your move does not work as it is Invalid!")
@@ -59,7 +62,7 @@ class Game:
                         self.restart()
                         screen.fill(BG_COLOUR)
                         self.board.render(screen)
-                        self.nextCell = [-1,-1]
+                        self.next_cell = [-1,-1]
                     if event.key == pygame.K_ESCAPE:
                         logging.info('Returning to Main menu')
                         screen.fill(BG_COLOUR)
