@@ -2,12 +2,14 @@ import pygame
 import logging
 
 from const import ALPHA
-from const import FADE
+from const import BG_COLOUR
 from const import DIM
 from const import LINE_COLOUR
 from const import CROSS_COLOUR
 from const import CIRCLE_COLOUR
 from const import WIDTH
+from const import HEIGHT
+
 from boardDims import Board_Dim
 
 class Board:
@@ -63,6 +65,24 @@ class Board:
         pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
         pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
     
+    def highlight_valid_move (self, surface, next_cell, player):
+        # surface.fill(BG_COLOUR)
+        sqr = self.squares[next_cell[1]][next_cell[0]]
+        outer_sqr = pygame.Rect(0, 0, WIDTH, HEIGHT)
+        pygame.draw.rect(surface, BG_COLOUR, outer_sqr, 4)
+        
+        self.render(surface)
+        
+        valid_move_sqr = pygame.Rect(sqr.dims.xcor, sqr.dims.ycor, sqr.dims.size, sqr.dims.size)
+        if player == 2:
+            turn_colour = CIRCLE_COLOUR
+        else:
+            turn_colour = CROSS_COLOUR
+        if next_cell == [-1,-1]:
+            pygame.draw.rect(surface, turn_colour, outer_sqr, 4)
+        else:
+            pygame.draw.rect(surface, turn_colour, valid_move_sqr, 4)
+        return
     def next_board_full(self, xclick, yclick, nextCell, ultimate, maxMode):
         if not ultimate :
             logging.info("Not relevant variable checking, set to True to validate next move")
