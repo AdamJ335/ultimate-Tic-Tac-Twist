@@ -82,7 +82,6 @@ class Board:
         
         self.render(surface)
         
-        valid_move_sqr = pygame.Rect(sqr.dims.xcor, sqr.dims.ycor, sqr.dims.size, sqr.dims.size)
         if player == 2:
             turn_colour = CIRCLE_COLOUR
         else:
@@ -90,7 +89,7 @@ class Board:
         if next_cell == [-1,-1]:
             pygame.draw.rect(surface, turn_colour, outer_sqr, 4)
         else:
-            pygame.draw.rect(surface, turn_colour, valid_move_sqr, 4)
+            pygame.draw.rect(surface, turn_colour, pygame.Rect(sqr.dims.xcor, sqr.dims.ycor, sqr.dims.size, sqr.dims.size), 4)
         return
     def next_board_full(self, xclick, yclick, next_cell, ultimate, max_mode):
         if not ultimate :
