@@ -51,7 +51,8 @@ class Game:
                             logging.info("Next board is full, setting free move")
                             self.next_cell = [-1,-1] 
                         self.next_turn()
-                        self.board.highlight_valid_move(screen, self.next_cell, self.player)
+                        if self.playing:
+                            self.board.highlight_valid_move(screen, self.next_cell, self.player)
                     else:
                         logging.info('Invalid move!')
                         pyautogui.alert("Your move does not work as it is Invalid!")
