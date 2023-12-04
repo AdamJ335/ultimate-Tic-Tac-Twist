@@ -106,8 +106,12 @@ class Board:
     def fetch_valid_moves(self, next_cell, ultimate, max_mode):
         
         next_moves = []
-        if ultimate and next_cell != [-1,-1]:
+        if next_cell == [-1,-1]:
+            next_grid = self.squares
+        else:
             next_grid = self.squares[next_cell[1]][next_cell[0]]
+
+        if ultimate:
             xcor = next_grid.dims.xcor
             ycor = next_grid.dims.ycor
             next_grid = next_grid.squares
@@ -127,6 +131,14 @@ class Board:
         elif not ultimate and not max_mode:
             xcor = 0
             ycor = 0
+            for col in range(3):
+                for row in range(3):
+                    if next_grid[col][row] == 0:
+                        next_move = [col, row]
+                        next_moves.append(next_move)
+            next_move_pos = [xcor, ycor]
+            next_moves.append(next_move_pos)
+            return next_moves
         
         for col in range(3):
             for row in range(3):

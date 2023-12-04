@@ -94,7 +94,7 @@ class Game:
 
     def handle_computer_move(self, screen):
         logging.info("Handling CPU Turn")
-        time.sleep(1)
+        time.sleep(random.random()+0.5)
         valid_moves = self.board.fetch_valid_moves(self.next_cell, self.ultimate, self.max_mode)
         print(valid_moves)
 
