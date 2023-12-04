@@ -96,7 +96,7 @@ class Game:
 
 
     def ultimate_winner(self, surface, winner):
-        print('ULTIMATE WINNER! ->', winner)
+        logging.info('WINNER! -> %s' , winner)
 
         if winner == 1:
             # color = CROSS_COLOUR

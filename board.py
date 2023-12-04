@@ -149,7 +149,7 @@ class Board:
             logging.info('Inner Cell found -> (%s,%s)', row, col)
             self.squares[row][col] = player
             next_cell = [col, row]
-            print('returning ', next_cell)
+            logging.info('returning ', next_cell)
 
             return next_cell
 
@@ -252,7 +252,6 @@ class Board:
                     if winner: # recursive step
                         self.squares[row][col] = winner
                         sqr.manage_win(surface, winner)
-                        self.active = False
 
                 # main
                 # vertical wins
