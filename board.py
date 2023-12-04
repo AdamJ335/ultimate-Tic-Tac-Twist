@@ -91,7 +91,7 @@ class Board:
         else:
             pygame.draw.rect(surface, turn_colour, pygame.Rect(sqr.dims.xcor, sqr.dims.ycor, sqr.dims.size, sqr.dims.size), 4)
         return
-    def next_board_full(self, xclick, yclick, next_cell, ultimate, max_mode):
+    def next_board_full(self, next_cell, ultimate):
         if not ultimate :
             logging.info("Not relevant variable checking, set to True to validate next move")
             return True
@@ -103,17 +103,49 @@ class Board:
             return True
         return False
         
+    def fetch_valid_moves(self, next_cell, ultimate, max_mode):
+        
+        next_moves = []
+        if ultimate and next_cell != [-1,-1]:
+            next_grid = self.squares[next_cell[1]][next_cell[0]]
+            xcor = next_grid.dims.xcor
+            ycor = next_grid.dims.ycor
+            next_grid = next_grid.squares
+        if max_mode:
+            for grid_x in range(3):
+                for grid_y in range(3):
+                    for col in range(3):
+                        for row in range (3):
+                            current_grid = next_grid[grid_x][grid_y]
+                            if current_grid.squares[col][row] == 0:
+                                next_move = [grid_x, grid_y, col, row]
+                                next_moves.append(next_move)
+            
+            next_move_pos = [xcor, ycor]
+            next_moves.append(next_move_pos)
+            return next_moves
+        elif not ultimate and not max_mode:
+            xcor = 0
+            ycor = 0
+        
+        for col in range(3):
+            for row in range(3):
+                if next_grid[col][row] == 0:
+                    next_move = [col, row]
+                    next_moves.append(next_move)
+        next_move_pos = [xcor, ycor]
+        next_moves.append(next_move_pos)
+        return next_moves
 
     def valid_sqr(self, xclick, yclick, next_cell, max_mode):
-
-
+        
         row = yclick // self.dims.sqsize
         col = xclick // self.dims.sqsize
 
         if row > 2: row %= DIM
         if col > 2: col %= DIM
 
-        logging.info('Validating... (xclick, row, yclick, col) -> (%s, %s, %s, %s)', xclick, row, yclick, col)
+        logging.info('Validating... (xclick, row, yclick, col) -> (%s, %s, %s,  %s)', xclick, col, yclick, row)
 
         sqr = self.squares[row][col]
         # base case
@@ -149,7 +181,7 @@ class Board:
             logging.info('Inner Cell found -> (%s,%s)', row, col)
             self.squares[row][col] = player
             next_cell = [col, row]
-            logging.info('returning ', next_cell)
+            logging.info('returning %s', next_cell)
 
             return next_cell
 

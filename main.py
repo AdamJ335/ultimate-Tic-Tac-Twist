@@ -22,8 +22,6 @@ class Main:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.screen.fill(BG_COLOUR)
 
-
-
     def menu(self):        
         pygame.display.set_caption('Menu')
         # load button images
@@ -61,7 +59,7 @@ class Main:
         multiplayer_check.checked = True
         player_modes = [singleplayer_check, multiplayer_check]
 
-        singlePlayer = False
+        single_player = False
 
         while True:
             screen = self.screen
@@ -70,11 +68,11 @@ class Main:
                 for player in player_modes:
                     if player.checked:
                         if player.caption == '1P':
-                            singlePlayer = True
-                            print(singlePlayer)
+                            single_player = True
+                            print(single_player)
                         if player.caption == '2P':
-                            singlePlayer = False
-                            print(singlePlayer)
+                            single_player = False
+                            print(single_player)
                 for mode in game_modes:
                     if mode.checked:
                         if mode.caption == 'Regular':
@@ -88,8 +86,8 @@ class Main:
                             max_mode = True
                 
                 logging.info('Starting game with UltimateMode -> %s and MaxMode -> %s', ultimate_mode, max_mode)
-                logging.info('Single Player mode? %s', singlePlayer)
-                self.play_game(ultimate_mode, max_mode, singlePlayer)
+                logging.info('Single Player mode? %s', single_player)
+                self.play_game(ultimate_mode, max_mode, single_player)
             
             pygame.display.update()
             for event in pygame.event.get():
