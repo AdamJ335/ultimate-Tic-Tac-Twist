@@ -112,6 +112,21 @@ class Board:
             next_grid = self.squares[next_cell[1]][next_cell[0]]
 
         if ultimate:
+            if next_cell == [-1,-1]:
+                for grid_x in range(3):
+                    for grid_y in range(3):
+                        next_grid = self.squares[grid_x][grid_y]
+                        if next_grid != 1 and next_grid != 2:
+                            if next_grid.active:
+                                if next_grid.squares[grid_x][grid_y] == 0:
+                                    next_move = [grid_x, grid_y]
+                                    next_moves.append(next_move)
+                                    xcor = next_grid.dims.xcor
+                                    ycor = next_grid.dims.ycor
+                                    next_move_pos = [xcor, ycor]
+                                    next_moves.append(next_move_pos)
+                                    return next_moves
+
             xcor = next_grid.dims.xcor
             ycor = next_grid.dims.ycor
             next_grid = next_grid.squares
