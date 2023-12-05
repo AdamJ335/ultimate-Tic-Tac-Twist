@@ -1,5 +1,5 @@
-WIDTH = 729 #in pixels
-HEIGHT = 729
+WIDTH = 999 #in pixels
+HEIGHT = 999
 
 BG_COLOUR = (0,17,37)
 

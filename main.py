@@ -27,7 +27,7 @@ class Main:
         icon_img = pygame.image.load('assets/game_icon.png').convert_alpha()      
         pygame.display.set_icon(icon_img)
 
-        icon_img_button = button.Button(268, 150, icon_img, 6)
+        icon_img_button = button.Button(388, 250, icon_img, 7)
 
         pygame.display.set_caption('Menu')
         # load button images
@@ -36,18 +36,18 @@ class Main:
 
         #load Title screen image
         title_img = pygame.image.load('assets/title_img.png').convert_alpha()
-        title_img_button = button.Button(81, 25, title_img, 1)
+        title_img_button = button.Button(75, 25, title_img, 1.5)
 
         # create button instances
-        start_button = button.Button(140, 600, start_img, 0.8)
-        exit_button = button.Button(418, 600, exit_img, 0.8)
+        start_button = button.Button(140, 850, start_img, 0.8)
+        exit_button = button.Button(618, 850, exit_img, 0.8)
 
         
-        regularCheck = Checkbox(self.screen, 125, 400, 0,
+        regularCheck = Checkbox(self.screen, 225, 500, 0,
                                 caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        ultimateCheck = Checkbox(self.screen, 135, 450, 1,
+        ultimateCheck = Checkbox(self.screen, 235, 550, 1,
                                 caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        maxCheck = Checkbox(self.screen, 145, 500, 2,
+        maxCheck = Checkbox(self.screen, 245, 600, 2,
                             caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
         regularCheck.checked = True
         game_modes = [regularCheck, ultimateCheck, maxCheck]
@@ -56,9 +56,9 @@ class Main:
         max_mode = False
 
         
-        singleplayer_check = Checkbox(self.screen, 425, 450, 0, 
+        singleplayer_check = Checkbox(self.screen, 625, 550, 0, 
                                     caption='1P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
-        multiplayer_check = Checkbox(self.screen, 435, 500, 0,
+        multiplayer_check = Checkbox(self.screen, 635, 600, 0,
                                     caption='2P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
         multiplayer_check.checked = True
         player_modes = [singleplayer_check, multiplayer_check]
