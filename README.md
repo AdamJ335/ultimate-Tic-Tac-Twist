@@ -4,6 +4,7 @@
 A Tier 2 driven coding project to generate an Ultimate tic-tac-toe game to be played. [How it works](https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/)
 
 # Run locally
+- `pip install -r requirements.txt`
 - `main.py`
 
 # How to Run game
