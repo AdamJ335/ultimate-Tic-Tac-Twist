@@ -45,7 +45,7 @@ class Main:
 
                         self.nextCellRow = self.nextCell[0]
                         self.nextCellCol = self.nextCell[1]
-                        if game.check_next_board_full(xclick, yclick, self.nextCell):
+                        if game.board.next_board_full(xclick, yclick, self.nextCell):
                             self.nextCell = [-1,-1] 
                         
                         # ultimate winner ?
