@@ -63,8 +63,8 @@ class Board:
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.sqsize),                  (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.sqsize), self.linewidth)
             pygame.draw.line(surface, LINE_COLOUR, (self.dims.xcor, self.dims.ycor + self.dims.size - self.dims.sqsize), (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
         
-        def next_board_full(self, xclick, yclick, nextCell, ultimate, maxMode):
-            if not ultimate :
+        def next_board_full(self, xclick, yclick, nextCell, ultimate):
+            if ultimate == False :
                 logging.info("Not relevant variable checking, set to True to validate next move")
                 return True
 
@@ -79,8 +79,8 @@ class Board:
             # Get Board at next cell co-ordinates. and check if active=True
             nextGrid = self.squares[nextCell[1]][nextCell[0]]
 
-            if not isinstance(sqr, Board) and not maxMode:
-                return sqr.next_board_full(xclick, yclick, nextCell, ultimate, maxMode)
+            if not isinstance(sqr, Board):
+                return sqr.next_board_full(xclick, yclick, nextCell, ultimate)
             else:
                 if nextGrid == 1 or nextGrid == 2:
                     return True
@@ -89,8 +89,7 @@ class Board:
             return False
             
 
-        def valid_sqr(self, xclick, yclick, nextCell, maxMode):
-
+        def valid_sqr(self, xclick, yclick, nextCell):
 
             row = yclick // self.dims.sqsize
             col = xclick // self.dims.sqsize
@@ -102,20 +101,17 @@ class Board:
 
             sqr = self.squares[row][col]
             # base case
-            if not isinstance(sqr, Board) and not maxMode:
+            if not isinstance(sqr, Board):     
                 logging.info('sqr: %s self.active %s', sqr, self.active)
                 return sqr == 0 and self.active
             else:
                 if nextCell[0] == -1 and nextCell[1] == -1 :
                     logging.info('Ignore next move check -> Free move')
                     nextCell = [col,row]
-                    return True
                 if nextCell[0] != col or nextCell[1] != row :
                     return False
-                if nextCell[0] == col and nextCell[1] == row and maxMode:
-                    return True
             # recursive step
-            return sqr.valid_sqr(xclick, yclick, nextCell, maxMode)
+            return sqr.valid_sqr(xclick, yclick, nextCell)
 
         def mark_sqr(self, xclick, yclick, player, nextCell):
             

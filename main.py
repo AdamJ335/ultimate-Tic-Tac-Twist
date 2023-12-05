@@ -1,13 +1,12 @@
 import pygame
 import sys
 import logging 
-import button
 
 from const import WIDTH
 from const import HEIGHT
 from const import BG_COLOUR
 from game import Game
-from checkBox import CheckBox
+
 
 class Main:
 
@@ -19,58 +18,13 @@ class Main:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.screen.fill(BG_COLOUR)
         pygame.display.set_caption('ULTIMATE TIC TAC TWIST')
-        self.game = Game(ultimate=True, max=True)
+        self.game = Game(ultimate=True, max=False)
         self.nextCell = [-1,-1]
 
-
-
-    def menu(self):
-        pygame.display.set_caption('Menu')
-        # load button images
-        start_img = pygame.image.load('assets/start_btn.png').convert_alpha()
-        exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
-
-        # create button instances
-        start_button = button.Button(253, 475, start_img, 0.8)
-        exit_button = button.Button(268, 600, exit_img, 0.8)
-
-        boxes = []
-        regularCheck = CheckBox(self.screen, 200, 200, 0, caption='Regular')
-        ultimateCheck = CheckBox(self.screen, 200, 250, 1, caption='Ultimate')
-        maxCheck = CheckBox(self.screen, 200, 300, 2, caption='Max!!!')
-        boxes.append(regularCheck)
-        boxes.append(ultimateCheck)
-        boxes.append(maxCheck)
-
-        while True:
-            screen = self.screen
-            if start_button.draw(screen):
-                self.mainloop(True, False)
-            
-            pygame.display.update()
-            for event in pygame.event.get():
-                 # quit
-                if event.type == pygame.QUIT or exit_button.draw(screen):
-                    logging.info('Quitting')
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:    
-                    for box in boxes:
-                        box.update_checkbox(event)
-                        if box.checked is True:
-                            for b in boxes:
-                                if b != box:
-                                    b.checked = False
-            for box in boxes:
-                box.render_checkbox()
-                
-            pygame.display.flip()
-               
-
-    def mainloop(self, ultimate, maxMode):
+    def mainloop(self):
 
         screen = self.screen
-        game = Game(ultimate=ultimate, max=maxMode)
+        game = self.game
 
         self.screen.fill(BG_COLOUR)
         game.render_board(screen)
@@ -84,7 +38,7 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN and game.playing:
                     xclick, yclick = event.pos
 
-                    if game.check_valid_move(xclick, yclick, self.nextCell):
+                    if game.board.valid_sqr(xclick, yclick, self.nextCell):
                         self.nextCell =game.board.mark_sqr(xclick, yclick, game.player, self.nextCell)
                         logging.info('nextCell = %s',self.nextCell)
                         game.board.draw_fig(screen, xclick, yclick)
@@ -123,4 +77,4 @@ class Main:
 
 if __name__ == '__main__':
     main = Main()
-    main.menu()
+    main.mainloop()
