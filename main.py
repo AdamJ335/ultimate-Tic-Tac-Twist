@@ -27,27 +27,39 @@ class Main:
         icon_img = pygame.image.load('assets/game_icon.png').convert_alpha()      
         pygame.display.set_icon(icon_img)
 
-        icon_img_button = button.Button(388, 250, icon_img, 7)
+        icon_img_button = button.Button(372, 250, icon_img, 8)
 
         pygame.display.set_caption('Menu')
+
+        # load how to play button
+        how_to_play_img = pygame.image.load('assets/how_to_play_img.png').convert_alpha()
+        how_to_play_btn = button.Button(675, 184, how_to_play_img, 5)
+
         # load button images
         start_img = pygame.image.load('assets/start_btn.png').convert_alpha()
         exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
 
         #load Title screen image
         title_img = pygame.image.load('assets/title_img.png').convert_alpha()
-        title_img_button = button.Button(75, 25, title_img, 1.5)
+        title_img_btn = button.Button(75, 25, title_img, 1.5)
+
+        # load modes and players labels
+        players_label_img = pygame.image.load('assets/players_label_img.png').convert_alpha()
+        mode_label_img = pygame.image.load('assets/mode_label_img.png').convert_alpha()
+
+        mode_label_btn = button.Button(195, 575, mode_label_img, 5)
+        players_label_btn = button.Button(620, 575, players_label_img, 5)
 
         # create button instances
-        start_button = button.Button(140, 850, start_img, 0.8)
-        exit_button = button.Button(618, 850, exit_img, 0.8)
+        start_btn = button.Button(140, 850, start_img, 10)
+        exit_btn = button.Button(618, 850, exit_img, 10)
 
         
-        regularCheck = Checkbox(self.screen, 225, 500, 0,
+        regularCheck = Checkbox(self.screen, 200, 650, 0,
                                 caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        ultimateCheck = Checkbox(self.screen, 235, 550, 1,
+        ultimateCheck = Checkbox(self.screen, 210, 700, 1,
                                 caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        maxCheck = Checkbox(self.screen, 245, 600, 2,
+        maxCheck = Checkbox(self.screen, 220, 750, 2,
                             caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
         regularCheck.checked = True
         game_modes = [regularCheck, ultimateCheck, maxCheck]
@@ -56,9 +68,9 @@ class Main:
         max_mode = False
 
         
-        singleplayer_check = Checkbox(self.screen, 625, 550, 0, 
+        singleplayer_check = Checkbox(self.screen, 625, 650, 0, 
                                     caption='1P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
-        multiplayer_check = Checkbox(self.screen, 635, 600, 0,
+        multiplayer_check = Checkbox(self.screen, 635, 700, 0,
                                     caption='2P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
         multiplayer_check.checked = True
         player_modes = [singleplayer_check, multiplayer_check]
@@ -67,9 +79,14 @@ class Main:
         while True:
             screen = self.screen
             icon_img_button.draw(screen)
-            title_img_button.draw(screen)
+            title_img_btn.draw(screen)
+            mode_label_btn.draw(screen)
+            players_label_btn.draw(screen)
 
-            if start_button.draw(screen):
+            if how_to_play_btn.draw(screen):
+                print('LEARN TO PLAY YOURSELF NOOB')
+
+            if start_btn.draw(screen):
                 for player in player_modes:
                     if player.checked:
                         if player.caption == '1P':
@@ -97,7 +114,7 @@ class Main:
             pygame.display.update()
             for event in pygame.event.get():
                  # quit
-                if event.type == pygame.QUIT or exit_button.draw(screen):
+                if event.type == pygame.QUIT or exit_btn.draw(screen):
                     logging.info('Quitting')
                     pygame.quit()
                     sys.exit()
