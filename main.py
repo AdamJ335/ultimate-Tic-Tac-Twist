@@ -55,14 +55,14 @@ class Main:
         exit_btn = button.Button(618, 850, exit_img, 10)
 
         
-        regularCheck = Checkbox(self.screen, 200, 650, 0,
+        regular_check = Checkbox(self.screen, 200, 650, 0,
                                 caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        ultimateCheck = Checkbox(self.screen, 210, 700, 1,
+        ultimate_check = Checkbox(self.screen, 210, 700, 1,
                                 caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        maxCheck = Checkbox(self.screen, 220, 750, 2,
+        max_check = Checkbox(self.screen, 220, 750, 2,
                             caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        regularCheck.checked = True
-        game_modes = [regularCheck, ultimateCheck, maxCheck]
+        regular_check.checked = True
+        game_modes = [regular_check, ultimate_check, max_check]
 
         ultimate_mode = False
         max_mode = False
