@@ -75,8 +75,7 @@ class Main:
                             maxMode = True
                 
                 logging.info('Starting game with UltimateMode -> %s and MaxMode -> %s', ultimateMode, maxMode)
-                logging.info('Single Player mode? %s', singlePlayer)
-                self.playGame(ultimateMode, maxMode, singlePlayer)
+                self.playGame(ultimateMode, maxMode)
             
             pygame.display.update()
             for event in pygame.event.get():
@@ -107,13 +106,13 @@ class Main:
             pygame.display.flip()
                
 
-    def playGame(self, ultimate, maxMode, singlePlayer):
+    def playGame(self, ultimate, maxMode):
 
         logging.info('Loading game...')
 
         screen = self.screen
         screen.fill(BG_COLOUR)
-        game = Game(ultimate=ultimate, max=maxMode, singlePlayer=singlePlayer)
+        game = Game(ultimate=ultimate, max=maxMode)
         game.play_game(screen)
         self.menu()
 
