@@ -115,10 +115,9 @@ class Game:
             xclick = grid_pos[0] + (move_chosen[1] * multiplier)
             yclick = grid_pos[1] + (move_chosen[0] * multiplier)
 
-        print(move_chosen)
+        logging.debug('Computer co-ordinates move chosen -> %s ', move_chosen)
 
-        print(xclick)
-        print(yclick)
+        logging.debug('Calculating "click" position xclick/yclick -> [%s / %s]', xclick, yclick)
 
         self.handle_move(screen, xclick, yclick)
 
