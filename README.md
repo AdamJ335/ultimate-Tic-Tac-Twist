@@ -1,5 +1,7 @@
 [![apj github](https://img.shields.io/badge/GitHub-adamj335-181717.svg?style=flat&logo=github)](https://github.com/adamj335)
 [![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![Pyflakes](https://github.com/AdamJ335/ultimate-Tic-Tac-Twist/actions/workflows/pyflakes.yml/badge.svg?branch=main)](https://github.com/AdamJ335/ultimate-Tic-Tac-Twist/actions/workflows/pyflakes.yml)
+
 # Ultimate Tic Tac Toe
 A Tier 2 driven coding project to generate an Ultimate tic-tac-toe game to be played. [How it works](https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/)
 
