@@ -5,7 +5,6 @@ import random
 import time
 
 from board import Board
-from const import DIM
 from const import WIDTH
 from const import HEIGHT
 from const import BG_COLOUR
