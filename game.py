@@ -95,29 +95,29 @@ class Game:
         logging.info("Handling CPU Turn")
         time.sleep(random.random()+0.5)
         valid_moves = self.board.fetch_valid_moves(self.next_cell, self.ultimate, self.max_mode)
-        print(valid_moves)
+        print('valid moves -> ', valid_moves)
 
         grid_pos = valid_moves[len(valid_moves)-1]
         print(grid_pos)
 
         move_chosen = valid_moves[random.randint(0, len(valid_moves)-2)]
         
-        multiplier = 244
+        multiplier = 333
         if self.ultimate and not self.max_mode:
-            multiplier = 81
+            multiplier = 111
         if self.max_mode:
-            multiplier = 27
+            multiplier = 37
 
         if self.max_mode:
-            xclick = grid_pos[0] + (move_chosen[0] * 81) + (move_chosen[2] * multiplier) 
-            yclick = grid_pos[1] + (move_chosen[1] * 81) + (move_chosen[3] * multiplier) 
+            xclick = grid_pos[0] + (move_chosen[0] * 111) + (move_chosen[3] * multiplier) 
+            yclick = grid_pos[1] + (move_chosen[1] * 111) + (move_chosen[2] * multiplier) 
         else:
             xclick = grid_pos[0] + (move_chosen[1] * multiplier)
             yclick = grid_pos[1] + (move_chosen[0] * multiplier)
 
-        logging.debug('Computer co-ordinates move chosen -> %s ', move_chosen)
+        logging.info('Computer co-ordinates move chosen -> %s ', move_chosen)
 
-        logging.debug('Calculating "click" position xclick/yclick -> [%s / %s]', xclick, yclick)
+        logging.info('Calculating "click" position xclick/yclick -> [%s / %s]', xclick, yclick)
 
         self.handle_move(screen, xclick, yclick)
 
