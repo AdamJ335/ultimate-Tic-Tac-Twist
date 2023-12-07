@@ -18,6 +18,9 @@ Use main.py as root script
 # Start menu
 <img src="./assets/Screenshots/screenshot1-menu.png">
 
+# How to play
+<img src="./assets/Screenshots/screenshot6-howtoplay.png">
+
 # Regular game 
 <img src="./assets/Screenshots/screenshot2-regular.png">
 
