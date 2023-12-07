@@ -8,8 +8,6 @@ from const import CAPTION_2P
 from const import CAPTION_MAX
 from const import CAPTION_REGULAR
 from const import CAPTION_ULTIMATE
-from const import CIRCLE_COLOUR
-from const import CROSS_COLOUR
 from const import HEIGHT
 from const import WIDTH
 
