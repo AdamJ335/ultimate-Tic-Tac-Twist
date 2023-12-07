@@ -1,6 +1,7 @@
 import logging 
 import pygame
 import sys
+import webbrowser
 
 from const import BG_COLOUR
 from const import CAPTION_1P
@@ -30,7 +31,7 @@ class Main:
 
         # Load game logo
         icon_img = load_img_btn('game_icon.png', 372, 250, 8)
-
+        
         # load how to play button
         how_to_play_btn = load_img_btn('how_to_play_btn.png', 675, 184, 5)
 
@@ -68,6 +69,7 @@ class Main:
             title_img.draw(screen)
             mode_img.draw(screen)
             players_img.draw(screen)
+            exit_btn.draw(screen)
 
             if how_to_play_btn.draw(screen):
                 self.how_to_play_screen()
@@ -118,12 +120,16 @@ class Main:
         screen.fill(BG_COLOUR)
 
         how_to_play_title = load_img_btn('how_to_play_title.png', 83, 25, 17)
-        back_btn = load_img_btn('back_btn.png', 561, 800, 15)
+        back_btn = load_img_btn('back_btn.png', 686, 820, 10)
+        how_to_play_content = load_img_btn('how_to_play.png', 193, 197, 0.15)
+        info_btn = load_img_btn('info_btn.png', 858, 197, 3)
 
         while True:
             screen.fill(BG_COLOUR)
             how_to_play_title.draw(screen)
-
+            how_to_play_content.draw(screen)
+            if info_btn.draw(screen):
+                webbrowser.open(r"https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/")
             if back_btn.draw(screen):
                 screen.fill(BG_COLOUR)
                 return
@@ -137,7 +143,6 @@ class Main:
                 if event.type == pygame.QUIT:
                     screen.fill(BG_COLOUR)
                     return
-        print('LEARN TO PLAY YOURSELF NOOB')
 
 def single_player_checked(player_modes):
     for player in player_modes:
@@ -171,8 +176,9 @@ def render_checklist(modes):
 
 def load_img_btn(file_name, xpos, ypos, scale):
     file_directory = 'assets/' + file_name
-    img = pygame.image.load(file_directory).convert_alpha()      
-    pygame.display.set_icon(img)
+    img = pygame.image.load(file_directory).convert_alpha()
+    if file_name == 'game_icon.png':
+        pygame.display.set_icon(img)
     return Button(xpos, ypos, img, scale)
 
 if __name__ == '__main__':
