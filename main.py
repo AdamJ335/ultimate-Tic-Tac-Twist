@@ -1,16 +1,21 @@
-import sys
 import logging 
 import pygame
-import button
+import sys
 
-from const import WIDTH
-from const import HEIGHT
 from const import BG_COLOUR
-from const import CHECKBOX_FILL_COLOUR_GAME
-from const import CHECKBOX_FILL_COLOUR_PLAYER
+from const import CAPTION_1P
+from const import CAPTION_2P
+from const import CAPTION_MAX
+from const import CAPTION_REGULAR
+from const import CAPTION_ULTIMATE
+from const import CIRCLE_COLOUR
+from const import CROSS_COLOUR
+from const import HEIGHT
+from const import WIDTH
 
-from game import Game
+from button import Button
 from checkBox import Checkbox
+from game import Game
 
 class Main:
 
@@ -23,90 +28,58 @@ class Main:
         self.screen.fill(BG_COLOUR)
 
     def menu(self):  
-        # Load game logo
-        icon_img = pygame.image.load('assets/game_icon.png').convert_alpha()      
-        pygame.display.set_icon(icon_img)
-
-        icon_img_button = button.Button(372, 250, icon_img, 8)
-
         pygame.display.set_caption('Menu')
 
-        # load how to play button
-        how_to_play_img = pygame.image.load('assets/how_to_play_img.png').convert_alpha()
-        how_to_play_btn = button.Button(675, 184, how_to_play_img, 5)
+        # Load game logo
+        icon_img = load_img_btn('game_icon.png', 372, 250, 8)
 
-        # load button images
-        start_img = pygame.image.load('assets/start_btn.png').convert_alpha()
-        exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
+        # load how to play button
+        how_to_play_btn = load_img_btn('how_to_play_btn.png', 675, 184, 5)
 
         #load Title screen image
-        title_img = pygame.image.load('assets/title_img.png').convert_alpha()
-        title_img_btn = button.Button(75, 25, title_img, 1.5)
+        title_img = load_img_btn('title_img.png', 75, 25, 1.5)
 
         # load modes and players labels
-        players_label_img = pygame.image.load('assets/players_label_img.png').convert_alpha()
-        mode_label_img = pygame.image.load('assets/mode_label_img.png').convert_alpha()
+        mode_img = load_img_btn('mode_label_img.png', 195, 575, 5)
+        players_img = load_img_btn('players_label_img.png', 620, 575, 5)
 
-        mode_label_btn = button.Button(195, 575, mode_label_img, 5)
-        players_label_btn = button.Button(620, 575, players_label_img, 5)
-
-        # create button instances
-        start_btn = button.Button(140, 850, start_img, 10)
-        exit_btn = button.Button(618, 850, exit_img, 10)
+        # create start and exit button
+        start_btn = load_img_btn('start_btn.png', 140, 850, 10)
+        exit_btn = load_img_btn('exit_btn.png', 618, 850, 10)
 
         
-        regular_check = Checkbox(self.screen, 200, 650, 0,
-                                caption='Regular', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        ultimate_check = Checkbox(self.screen, 210, 700, 1,
-                                caption='Ultimate', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
-        max_check = Checkbox(self.screen, 220, 750, 2,
-                            caption='Max!!!', check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=True)
+        regular_check = Checkbox(self.screen, 200, 650, caption=CAPTION_REGULAR, cross_filled=True)
+        ultimate_check = Checkbox(self.screen, 210, 700, caption=CAPTION_ULTIMATE, cross_filled=True)
+        max_check = Checkbox(self.screen, 220, 750, caption=CAPTION_MAX, cross_filled=True)
+        
         regular_check.checked = True
         game_modes = [regular_check, ultimate_check, max_check]
 
-        ultimate_mode = False
-        max_mode = False
+        singleplayer_check = Checkbox(self.screen, 625, 650, caption=CAPTION_1P)
+        multiplayer_check = Checkbox(self.screen, 635, 700, caption=CAPTION_2P)
 
-        
-        singleplayer_check = Checkbox(self.screen, 625, 650, 0, 
-                                    caption='1P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
-        multiplayer_check = Checkbox(self.screen, 635, 700, 0,
-                                    caption='2P', check_color=CHECKBOX_FILL_COLOUR_PLAYER)
         multiplayer_check.checked = True
         player_modes = [singleplayer_check, multiplayer_check]
 
+        ultimate_mode = False
+        max_mode = False
         single_player = False
         while True:
             screen = self.screen
-            icon_img_button.draw(screen)
-            title_img_btn.draw(screen)
-            mode_label_btn.draw(screen)
-            players_label_btn.draw(screen)
+            icon_img.draw(screen)
+            title_img.draw(screen)
+            mode_img.draw(screen)
+            players_img.draw(screen)
 
             if how_to_play_btn.draw(screen):
-                print('LEARN TO PLAY YOURSELF NOOB')
+                self.how_to_play_screen()
 
             if start_btn.draw(screen):
-                for player in player_modes:
-                    if player.checked:
-                        if player.caption == '1P':
-                            single_player = True
-                            print(single_player)
-                        if player.caption == '2P':
-                            single_player = False
-                            print(single_player)
-                for mode in game_modes:
-                    if mode.checked:
-                        if mode.caption == 'Regular':
-                            ultimate_mode = False
-                            max_mode = False
-                        if mode.caption == 'Ultimate':
-                            ultimate_mode = True
-                            max_mode = False
-                        if mode.caption == 'Max!!!':
-                            ultimate_mode = True
-                            max_mode = True
-                
+
+                single_player = single_player_checked(player_modes)
+
+                ultimate_mode, max_mode = mode_checker(game_modes)
+                                
                 logging.info('Starting game with UltimateMode -> %s and MaxMode -> %s', ultimate_mode, max_mode)
                 logging.info('Single Player mode? %s', single_player)
                 self.play_game(ultimate_mode, max_mode, single_player)
@@ -119,23 +92,13 @@ class Main:
                     pygame.quit()
                     sys.exit()
                 
-                if event.type == pygame.MOUSEBUTTONDOWN:    
-                    for mode in game_modes:
-                        mode.update_checkbox(event)
-                        if mode.checked:
-                            for b in game_modes:
-                                if b != mode:
-                                    b.checked = False
-                    for player in player_modes:
-                        player.update_checkbox(event)
-                        if player.checked:
-                            for b in player_modes:
-                                if b != player:
-                                    b.checked = False
-            for mode in game_modes:
-                mode.render_checkbox()
-            for player in player_modes:
-                player.render_checkbox()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    switch_check_box(event, game_modes)
+
+                    switch_check_box(event, player_modes)
+
+            render_checklist(game_modes)
+            render_checklist(player_modes)
                 
             pygame.display.flip()
                
@@ -148,8 +111,71 @@ class Main:
         screen.fill(BG_COLOUR)
         game = Game(ultimate=ultimate, max_mode=max_mode, single_player=single_player)
         game.play_game(screen)
-        self.menu()
 
+        # game breaks out of loop, go back to menu
+        self.menu()
+    
+    def how_to_play_screen(self):
+        screen = self.screen
+        screen.fill(BG_COLOUR)
+
+        how_to_play_title = load_img_btn('how_to_play_title.png', 83, 25, 17)
+        back_btn = load_img_btn('back_btn.png', 561, 800, 15)
+
+        while True:
+            screen.fill(BG_COLOUR)
+            how_to_play_title.draw(screen)
+
+            if back_btn.draw(screen):
+                screen.fill(BG_COLOUR)
+                return
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        screen.fill(BG_COLOUR)
+                        return
+                 # quit
+                if event.type == pygame.QUIT:
+                    screen.fill(BG_COLOUR)
+                    return
+        print('LEARN TO PLAY YOURSELF NOOB')
+
+def single_player_checked(player_modes):
+    for player in player_modes:
+        if player.checked:
+            if player.caption == CAPTION_1P:
+                return True
+            if player.caption == CAPTION_2P:
+                return False
+
+def mode_checker(game_modes):
+    for mode in game_modes:
+        if mode.checked:
+            if mode.caption == CAPTION_REGULAR:
+                return False, False
+            if mode.caption == CAPTION_ULTIMATE:
+                return True, False
+            if mode.caption == CAPTION_MAX:
+                return True, True
+
+def switch_check_box(event, check_list):
+    for mode in check_list:
+        mode.update_checkbox(event)
+        if mode.checked:
+            for b in check_list:
+                if b != mode:
+                    b.checked = False
+
+def render_checklist(modes):
+    for mode in modes:
+        mode.render_checkbox()
+
+def load_img_btn(file_name, xpos, ypos, scale):
+    file_directory = 'assets/' + file_name
+    img = pygame.image.load(file_directory).convert_alpha()      
+    pygame.display.set_icon(img)
+    return Button(xpos, ypos, img, scale)
 
 if __name__ == '__main__':
     main = Main()

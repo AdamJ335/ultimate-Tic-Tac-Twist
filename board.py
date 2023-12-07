@@ -3,12 +3,12 @@ import pygame
 
 from const import ALPHA
 from const import BG_COLOUR
-from const import DIM
-from const import LINE_COLOUR
 from const import CROSS_COLOUR
 from const import CIRCLE_COLOUR
-from const import WIDTH
+from const import DIM
 from const import HEIGHT
+from const import LINE_COLOUR
+from const import WIDTH
 
 from boardDims import Board_Dim
 
@@ -75,7 +75,7 @@ class Board:
                          (self.dims.xcor + self.dims.size, self.dims.ycor + self.dims.size - self.dims.sqsize), self.linewidth)
     
     def highlight_valid_move (self, surface, next_cell, player):
-        # surface.fill(BG_COLOUR)
+
         sqr = self.squares[next_cell[1]][next_cell[0]]
         outer_sqr = pygame.Rect(0, 0, WIDTH, HEIGHT)
         pygame.draw.rect(surface, BG_COLOUR, outer_sqr, 4)
@@ -86,11 +86,13 @@ class Board:
             turn_colour = CIRCLE_COLOUR
         else:
             turn_colour = CROSS_COLOUR
-        if next_cell == [-1,-1]:
+        
+        if self.free_move(next_cell):
             pygame.draw.rect(surface, turn_colour, outer_sqr, 4)
         else:
             pygame.draw.rect(surface, turn_colour, pygame.Rect(sqr.dims.xcor, sqr.dims.ycor, sqr.dims.size, sqr.dims.size), 4)
         return
+        
     def next_board_full(self, next_cell, ultimate):
         if not ultimate :
             logging.info("Not relevant variable checking, set to True to validate next move")
@@ -106,30 +108,41 @@ class Board:
     def fetch_valid_moves(self, next_cell, ultimate, max_mode):
         
         next_moves = []
-        if next_cell == [-1,-1]:
+        if self.free_move(next_cell):
             next_grid = self.squares
         else:
             next_grid = self.squares[next_cell[1]][next_cell[0]]
 
-        if ultimate:
-            if next_cell == [-1,-1]:
-                for grid_x in range(3):
-                    for grid_y in range(3):
-                        next_grid = self.squares[grid_x][grid_y]
-                        if next_grid != 1 and next_grid != 2:
-                            if next_grid.active:
-                                if next_grid.squares[grid_x][grid_y] == 0:
-                                    next_move = [grid_x, grid_y]
-                                    next_moves.append(next_move)
-                                    xcor = next_grid.dims.xcor
-                                    ycor = next_grid.dims.ycor
-                                    next_move_pos = [xcor, ycor]
-                                    next_moves.append(next_move_pos)
-                                    return next_moves
+        if not ultimate and not max_mode:
+            xcor = 0
+            ycor = 0
+            for col in range(3):
+                for row in range(3):
+                    if next_grid[col][row] == 0:
+                        next_move = [col, row]
+                        next_moves.append(next_move)
+            next_move_pos = [xcor, ycor]
+            next_moves.append(next_move_pos)
+            return next_moves
 
-            xcor = next_grid.dims.xcor
-            ycor = next_grid.dims.ycor
-            next_grid = next_grid.squares
+        if self.free_move(next_cell):
+            for grid_x in range(3):
+                for grid_y in range(3):
+                    next_grid = self.squares[grid_x][grid_y]
+                    if next_grid != 1 and next_grid != 2:
+                        if next_grid.active:
+                            if next_grid.squares[grid_x][grid_y] == 0:
+                                next_move = [grid_x, grid_y]
+                                next_moves.append(next_move)
+                                xcor = next_grid.dims.xcor
+                                ycor = next_grid.dims.ycor
+                                next_move_pos = [xcor, ycor]
+                                next_moves.append(next_move_pos)
+                                return next_moves
+
+        xcor = next_grid.dims.xcor
+        ycor = next_grid.dims.ycor
+        next_grid = next_grid.squares
         if max_mode:
             for grid_x in range(3):
                 for grid_y in range(3):
@@ -140,17 +153,6 @@ class Board:
                                 next_move = [grid_x, grid_y, col, row]
                                 next_moves.append(next_move)
             
-            next_move_pos = [xcor, ycor]
-            next_moves.append(next_move_pos)
-            return next_moves
-        elif not ultimate and not max_mode:
-            xcor = 0
-            ycor = 0
-            for col in range(3):
-                for row in range(3):
-                    if next_grid[col][row] == 0:
-                        next_move = [col, row]
-                        next_moves.append(next_move)
             next_move_pos = [xcor, ycor]
             next_moves.append(next_move_pos)
             return next_moves
@@ -180,7 +182,7 @@ class Board:
             logging.info('sqr: %s self.active %s', sqr, self.active)
             return sqr == 0 and self.active
         else:
-            if next_cell[0] == -1 and next_cell[1] == -1 :
+            if self.free_move(next_cell) :
                 logging.info('Ignore next move check -> Free move')
                 next_cell = [col,row]
                 return True
@@ -271,7 +273,7 @@ class Board:
         
         # draw win
         if not onmain:
-            print("WINNER IS -> ", winner)
+            logging.info("WINNER IS -> %s", winner)
             # cross
             if winner == 1:
                 # desc line
@@ -363,3 +365,5 @@ class Board:
                     pygame.draw.line(surface, colour, ipos, fpos, self.linewidth)
 
                     return self.squares[1][1]
+    def free_move(self, next_cell):
+        return next_cell == [-1,-1]

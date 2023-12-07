@@ -1,13 +1,13 @@
-import pygame
 import logging
+import pygame
 import pyautogui
 import random
 import time
 
 from board import Board
-from const import WIDTH
-from const import HEIGHT
 from const import BG_COLOUR
+from const import HEIGHT
+from const import WIDTH
 
 class Game:
 
@@ -22,19 +22,18 @@ class Game:
         pygame.font.init()
 
     def play_game(self, screen):
-        pygame.display.set_caption('ULTIMATE TIC TAC TWIST')
+        pygame.display.set_caption('TIC TAC TOE')
         
         self.board.render(screen)
         logging.info('Starting in game loop')
         self.board.highlight_valid_move(screen, self.next_cell, self.player)
         while True:
-
             if self.single_player and self.player == 2 and self.playing:
                 self.handle_computer_move(screen)
             
             for event in pygame.event.get():
 
-                # click
+                # click on square
                 if event.type == pygame.MOUSEBUTTONDOWN and self.playing:
                     xclick, yclick = event.pos
 
@@ -53,18 +52,18 @@ class Game:
                         self.restart()
                         screen.fill(BG_COLOUR)
                         self.board.render(screen)
-                        self.next_cell = [-1,-1]
+                        self.set_free_move()
+                        self.board.highlight_valid_move(screen, self.next_cell, self.player)
                     if event.key == pygame.K_ESCAPE:
-                        logging.info('Returning to Main menu')
-                        screen.fill(BG_COLOUR)
+                        self.return_to_main(screen)
                         return
                 # quit
                 if event.type == pygame.QUIT:
-                    logging.info('Quitting to Menu')
-                    screen.fill(BG_COLOUR)
+                    self.return_to_main(screen)
                     return
             pygame.display.update()
 
+    # Marks correct square to draw, checks if the board state has won, set the next valid move to highlight
     def handle_move(self, screen, xclick, yclick):
         self.next_cell = self.board.mark_sqr(xclick, yclick, self.player, self.next_cell)
         logging.info('nextCell = %s',self.next_cell)
@@ -73,7 +72,7 @@ class Game:
         self.next_cell_row = self.next_cell[0]
         self.next_cell_col = self.next_cell[1]
 
-        # ultimate winner ?
+        # winner ?
         winner = self.board.check_draw_win(screen)
         if winner:
             self.board.manage_win(screen, winner, onmain=True)
@@ -81,8 +80,8 @@ class Game:
 
         if self.board.next_board_full(self.next_cell, self.ultimate):
             logging.info("Next board is full, setting free move")
-            self.next_cell = [-1,-1] 
-        
+            self.set_free_move()
+
         self.next_turn()
         
         if self.playing:
@@ -91,33 +90,37 @@ class Game:
     def next_turn(self):
         self.player = 2 if self.player == 1 else 1
 
+    # Gets all valid moves, randomly pick one, find click pos and handle move
     def handle_computer_move(self, screen):
         logging.info("Handling CPU Turn")
+
+        # Add CPU 'think' time
         time.sleep(random.random()+0.5)
+
         valid_moves = self.board.fetch_valid_moves(self.next_cell, self.ultimate, self.max_mode)
-        print('valid moves -> ', valid_moves)
+
+        logging.debug('valid moves -> ', valid_moves)
 
         grid_pos = valid_moves[len(valid_moves)-1]
-        print(grid_pos)
 
         move_chosen = valid_moves[random.randint(0, len(valid_moves)-2)]
         
-        multiplier = 333
+        multiplier = int(WIDTH / 3)
         if self.ultimate and not self.max_mode:
-            multiplier = 111
+            multiplier = int(multiplier / 3)
         if self.max_mode:
-            multiplier = 37
+            multiplier = int(multiplier / 9)
 
         if self.max_mode:
-            xclick = grid_pos[0] + (move_chosen[0] * 111) + (move_chosen[3] * multiplier) 
-            yclick = grid_pos[1] + (move_chosen[1] * 111) + (move_chosen[2] * multiplier) 
+            xclick = grid_pos[0] + (move_chosen[0] * int((WIDTH / 9))) + (move_chosen[3] * multiplier) 
+            yclick = grid_pos[1] + (move_chosen[1] * int((WIDTH / 9))) + (move_chosen[2] * multiplier) 
         else:
             xclick = grid_pos[0] + (move_chosen[1] * multiplier)
             yclick = grid_pos[1] + (move_chosen[0] * multiplier)
 
-        logging.info('Computer co-ordinates move chosen -> %s ', move_chosen)
+        logging.debug('Computer co-ordinates move chosen -> %s ', move_chosen)
 
-        logging.info('Calculating "click" position xclick/yclick -> [%s / %s]', xclick, yclick)
+        logging.debug('Calculating "click" position xclick/yclick -> [%s / %s]', xclick, yclick)
 
         self.handle_move(screen, xclick, yclick)
 
@@ -125,9 +128,8 @@ class Game:
     def ultimate_winner(self, surface, winner):
         logging.info('WINNER! -> %s' , winner)
 
+        # Cross winner
         if winner == 1:
-            # color = CROSS_COLOUR
-            # desc
             iDesc = (WIDTH // 2 - 110, HEIGHT // 2 - 110)
             fDesc = (WIDTH // 2 + 110, HEIGHT // 2 + 110)
             # asc
@@ -137,9 +139,8 @@ class Game:
             pygame.draw.line(surface, BG_COLOUR, iDesc, fDesc, 22)
             pygame.draw.line(surface, BG_COLOUR, iAsc, fAsc, 22)
 
+        #Circle winner
         else:
-            # color = CIRCLE_COLOUR
-            # center
             center = (WIDTH // 2, HEIGHT // 2   )
             pygame.draw.circle(surface, BG_COLOUR, center, WIDTH // 4, 22)
         
@@ -148,6 +149,10 @@ class Game:
         surface.blit(lbl, (WIDTH // 2 - lbl.get_rect().width // 2, HEIGHT // 2 + 220))
 
         self.playing = False
-    
+    def set_free_move(self):
+        self.next_cell = [-1,-1]
+    def return_to_main(self, screen):
+        logging.info('Returning to Main menu')
+        screen.fill(BG_COLOUR)
     def restart(self):
         self.__init__(self.ultimate, self.max_mode)

@@ -3,7 +3,8 @@ import pygame
 from const import FONT_SIZE
 from const import FONT_COLOUR
 from const import OUTLINE_COLOUR
-from const import CHECKBOX_FILL_COLOUR_GAME
+from const import CIRCLE_COLOUR
+from const import CROSS_COLOUR
 from const import CHECKBOX_LINE_COLOUR
 from const import TEXT_OFFSET
 from const import FONT_TYPE
@@ -11,54 +12,40 @@ from const import FONT_TYPE
 pygame.font.init()
 
 class Checkbox:
-    def __init__(self, surface, x, y, idnum, color=CHECKBOX_LINE_COLOUR,
-        caption="", check_color=CHECKBOX_FILL_COLOUR_GAME, cross_filled=False, outline_color=OUTLINE_COLOUR,
-        font_size=FONT_SIZE, font_color=FONT_COLOUR,
-    text_offset=TEXT_OFFSET,font=FONT_TYPE):
+    def __init__(self, surface, x, y, caption="", cross_filled=False):
         self.surface = surface
         self.x = x
         self.y = y
-        self.color = color
         self.caption = caption
         self.cross_filled = cross_filled
-        self.oc = outline_color
-        self.cc = check_color
-        self.fs = font_size
-        self.fc = font_color
-        self.to = text_offset
-        self.ft = font
-
-        #identification for removal and reorginazation
-        self.idnum = idnum
 
         # checkbox object
         self.checkbox_obj = pygame.Rect(self.x, self.y, 20, 20)
         self.checkbox_outline = self.checkbox_obj.copy()
 
-        # variables to test the different states of the checkbox
         self.checked = False
 
     def _draw_button_text(self):
-        self.font = pygame.font.SysFont(self.ft, self.fs)
-        self.font_surf = self.font.render(self.caption, True, self.fc)
+        self.font = pygame.font.SysFont(FONT_TYPE, FONT_SIZE)
+        self.font_surf = self.font.render(self.caption, True, FONT_COLOUR)
         w, h = self.font.size(self.caption)
-        self.font_pos = (self.x + self.to[0], self.y + 12 / 2 - h / 2 + 
-        self.to[1])
+        self.font_pos = (self.x + TEXT_OFFSET[0], self.y + 12 / 2 - h / 2 + TEXT_OFFSET[1])
         self.surface.blit(self.font_surf, self.font_pos)
 
     def render_checkbox(self):
         if self.checked:
-            pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
-            pygame.draw.rect(self.surface, self.oc, self.checkbox_outline, 1)
+            pygame.draw.rect(self.surface, CHECKBOX_LINE_COLOUR, self.checkbox_obj)
+            pygame.draw.rect(self.surface, OUTLINE_COLOUR, self.checkbox_outline, 1)
+
             if self.cross_filled:
-                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+1), (self.x+16, self.y+18), 4)
-                pygame.draw.line(self.surface, self.cc, (self.x+2, self.y+18), (self.x+16, self.y+1), 4)
+                pygame.draw.line(self.surface, CROSS_COLOUR, (self.x+2, self.y+1), (self.x+16, self.y+18), 4)
+                pygame.draw.line(self.surface, CROSS_COLOUR, (self.x+2, self.y+18), (self.x+16, self.y+1), 4)
             else:    
-                pygame.draw.circle(self.surface, self.cc, (self.x + 10, self.y + 10), 8, 3)
+                pygame.draw.circle(self.surface, CIRCLE_COLOUR, (self.x + 10, self.y + 10), 8, 3)
 
         elif not self.checked:
-            pygame.draw.rect(self.surface, self.color, self.checkbox_obj)
-            pygame.draw.rect(self.surface, self.oc, self.checkbox_outline, 1)
+            pygame.draw.rect(self.surface, CHECKBOX_LINE_COLOUR, self.checkbox_obj)
+            pygame.draw.rect(self.surface, OUTLINE_COLOUR, self.checkbox_outline, 1)
         self._draw_button_text()
 
     def _update(self):
